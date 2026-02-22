@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,15 +7,15 @@ namespace GMO.OpenTelemetry
 {
     public interface IAttributeEnricher
     {
-        Dictionary<string, object> Enrich(Activity activity = null);
+        Dictionary<string, object> Enrich(Activity? activity = null);
 
-        string GetCorrelationId(Activity activity = null);
+        string? GetCorrelationId(Activity? activity = null);
     }
 
     public class AttributeEnricher : IAttributeEnricher
     {
         private const string CorrelationIdKey = "CorrelationId";
-        private readonly ICorrelationIdService _correlationIdService;
+        private readonly ICorrelationIdService? _correlationIdService;
         private readonly IOpenTelemetryOptions _options;
         private readonly string[] _logExclusions;
 
@@ -38,7 +38,7 @@ namespace GMO.OpenTelemetry
 
         public AttributeEnricher(
             IOpenTelemetryOptions options,
-            ICorrelationIdService correlationIdService = null)
+            ICorrelationIdService? correlationIdService = null)
         {
             _correlationIdService = correlationIdService;
             _options = options;
@@ -48,7 +48,7 @@ namespace GMO.OpenTelemetry
                 .ToArray();
         }
 
-        public Dictionary<string, object> Enrich(Activity activity = null)
+        public Dictionary<string, object> Enrich(Activity? activity = null)
         {
             var attributes = new Dictionary<string, object>(_options?.Attributes ?? new Dictionary<string, object>());
 
@@ -60,7 +60,7 @@ namespace GMO.OpenTelemetry
             {
                 attributes["trace.id"] = activity.TraceId.ToString();
                 attributes["span.id"] = activity.SpanId.ToString();
-                attributes["operation.name"] = activity.GetRoot()?.DisplayName;
+                attributes["operation.name"] = activity.GetRoot()?.DisplayName ?? string.Empty;
 
                 var correlationId = GetCorrelationId(activity);
                 if (!string.IsNullOrEmpty(correlationId))
@@ -70,7 +70,7 @@ namespace GMO.OpenTelemetry
             }
 
             // Add thread information
-            if (_options.IncludeThreadInfo)
+            if (_options!.IncludeThreadInfo)
             {
                 attributes["thread.id"] = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
                 attributes["thread.name"] = System.Threading.Thread.CurrentThread.Name ?? "Unknown";
@@ -101,12 +101,12 @@ namespace GMO.OpenTelemetry
             return attributes;
         }
 
-        public string GetCorrelationId(Activity activity = null)
+        public string? GetCorrelationId(Activity? activity = null)
         {
             return _correlationIdService?.GetCorrelationId();
         }
 
-        private string GetUserIdentity()
+        private string? GetUserIdentity()
         {
             try
             {
@@ -130,7 +130,7 @@ namespace GMO.OpenTelemetry
             }
         }
 
-        private string GetAppDomain()
+        private string? GetAppDomain()
         {
             try
             {
@@ -147,7 +147,7 @@ namespace GMO.OpenTelemetry
             try
             {
                 var stackTrace = new StackTrace(true);
-                StackFrame sourceFrame = null;
+                StackFrame? sourceFrame = null;
 
                 for (int i = 0; i < stackTrace.FrameCount; i++)
                 {

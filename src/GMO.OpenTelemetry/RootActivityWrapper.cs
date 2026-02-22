@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using OpenTelemetry.Trace;
@@ -11,13 +11,13 @@ namespace GMO.OpenTelemetry
     /// </summary>
     public class RootActivityWrapper : ActivityWrapper
     {
-        private Activity _parent = null;
+        private Activity? _parent;
         private bool _isCreated = false;
 
         /// <summary>
         /// Gets the root activity
         /// </summary>
-        public Activity Root { get; private set; }
+        public Activity? Root { get; private set; }
 
         /// <summary>
         /// Creates a new RootActivityWrapper
@@ -33,19 +33,19 @@ namespace GMO.OpenTelemetry
             string rootOperationName,
             ActivitySource activitySource,
             bool forceNewDetachedRoot = false,
-            IActivityLogger log = null,
-            Dictionary<string, object> additionalData = null,
+            IActivityLogger? log = null,
+            Dictionary<string, object>? additionalData = null,
             ActivityContext? parentContext = null,
             ActivityKind activityKind = ActivityKind.Internal)
             : base(rootOperationName, activitySource, log, forceNewDetachedRoot, additionalData, parentContext, activityKind)
         {
         }
 
-        protected override Activity StartActivity()
+        protected override Activity? StartActivity()
         {
             _parent = Activity.Current;
 
-            Func<Activity> create = () =>
+            Func<Activity?> create = () =>
             {
                 _isCreated = true;
 

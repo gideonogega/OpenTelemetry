@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace GMO.OpenTelemetry
         private const string NewRelicIngestUrl = "https://log-api.newrelic.com/log/v1";
         private const string DynatraceIngestUrl = "https://{0}.live.dynatrace.com/api/v2/logs/ingest";
 
-        private static readonly string OtelLibraryName = typeof(TruncatingSpanProcessor).FullName;
+        private static readonly string OtelLibraryName = typeof(TruncatingSpanProcessor).FullName ?? "GMO.OpenTelemetry.TruncatingSpanProcessor";
         private static readonly string OtelLibraryVersion = typeof(TruncatingSpanProcessor).Assembly.GetName().Version?.ToString() ?? "unknown";
 
         private readonly HashSet<string> _keysToLog;

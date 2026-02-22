@@ -1,4 +1,4 @@
-﻿using Serilog.Core;
+using Serilog.Core;
 using Serilog.Events;
 
 namespace GMO.OpenTelemetry.Serilog
@@ -8,7 +8,7 @@ namespace GMO.OpenTelemetry.Serilog
         public const string LevelProp = "level";
 
         // Static service locator pattern for Serilog compatibility
-        private static IAttributeEnricher _attributeEnricher;
+        private static IAttributeEnricher? _attributeEnricher;
 
         // Parameterless constructor required by Serilog
         public OpenTelemetryEnricher()

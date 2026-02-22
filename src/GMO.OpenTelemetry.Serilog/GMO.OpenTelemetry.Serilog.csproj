@@ -12,8 +12,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
-		<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" />
+		<PackageReference Include="Serilog.Sinks.OpenTelemetry" />
 	</ItemGroup>
 
 	<ItemGroup>

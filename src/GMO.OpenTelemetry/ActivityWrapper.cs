@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,8 +14,8 @@ namespace GMO.OpenTelemetry
     {
         protected string _operationName;
         protected ActivitySource _activitySource;
-        protected IActivityLogger _log;
-        protected Activity _activity;
+        protected IActivityLogger? _log;
+        protected Activity? _activity;
         protected bool _forceNewDetachedRoot;
         protected int _spanDepth = 0;
         protected Dictionary<string, object> _additionalData;
@@ -25,7 +25,7 @@ namespace GMO.OpenTelemetry
         /// <summary>
         /// Gets the underlying Activity
         /// </summary>
-        public Activity Activity => _activity;
+        public Activity? Activity => _activity;
 
         /// <summary>
         /// Creates a new ActivityWrapper
@@ -40,9 +40,9 @@ namespace GMO.OpenTelemetry
         public ActivityWrapper(
             string operationName,
             ActivitySource activitySource,
-            IActivityLogger log = null,
+            IActivityLogger? log = null,
             bool forceNewDetachedRoot = false,
-            Dictionary<string, object> additionalData = null,
+            Dictionary<string, object>? additionalData = null,
             ActivityContext? parentContext = null,
             ActivityKind activityKind = ActivityKind.Internal)
         {
@@ -86,7 +86,7 @@ namespace GMO.OpenTelemetry
         /// <summary>
         /// Sets the status of the activity
         /// </summary>
-        public void SetStatus(ActivityStatusCode code, string description = null)
+        public void SetStatus(ActivityStatusCode code, string? description = null)
         {
             _activity?.SetStatus(code, description);
         }
@@ -121,14 +121,14 @@ namespace GMO.OpenTelemetry
         /// <summary>
         /// Adds an event to the activity
         /// </summary>
-        public void AddEvent(string name, Dictionary<string, object> attributes = null)
+        public void AddEvent(string name, Dictionary<string, object>? attributes = null)
         {
             if (_activity == null) return;
 
             if (attributes != null)
             {
                 var tags = new ActivityTagsCollection(
-                    attributes.Select(kvp => new KeyValuePair<string, object>(kvp.Key, kvp.Value)));
+                    attributes.Select(kvp => new KeyValuePair<string, object?>(kvp.Key, kvp.Value)));
                 _activity.AddEvent(new ActivityEvent(name, tags: tags));
             }
             else
@@ -152,7 +152,7 @@ namespace GMO.OpenTelemetry
             _activity?.Dispose();
         }
 
-        protected virtual Activity StartActivity()
+        protected virtual Activity? StartActivity()
         {
             return _activitySource.StartActivity(_operationName, _activityKind);
         }
@@ -186,7 +186,7 @@ namespace GMO.OpenTelemetry
             }
         }
 
-        private static bool IsPrimitive(object value)
+        private static bool IsPrimitive(object? value)
         {
             if (value == null) return true;
 

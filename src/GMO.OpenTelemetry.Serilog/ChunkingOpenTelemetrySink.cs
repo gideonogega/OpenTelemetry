@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using OpenTelemetry.Exporter;
 using Serilog;
 using Serilog.Core;
@@ -29,15 +29,15 @@ namespace GMO.OpenTelemetry.Serilog
                 : OtlpProtocol.Grpc;
 
             // Add null check for headers parsing
-            Dictionary<string, string> headers = null;
+            Dictionary<string, string>? headers = null;
             if (!string.IsNullOrWhiteSpace(options.Otlp.Headers))
             {
                 try
                 {
                     headers = options.Otlp.Headers.Split(',')
                         .Select(part => part?.Trim().Split('='))
-                        .Where(part => part?.Length == 2)
-                        .ToDictionary(sp => sp[0]?.Trim(), sp => sp[1]?.Trim());
+                        .Where(part => part != null && part.Length == 2)
+                        .ToDictionary(sp => sp![0].Trim(), sp => sp![1].Trim());
                 }
                 catch (Exception ex)
                 {
@@ -47,7 +47,7 @@ namespace GMO.OpenTelemetry.Serilog
             }
 
             // Add null check for endpoint
-            var endpoint = options.LoggingEndpoint ?? options.Otlp?.Endpoint?.AbsoluteUri;
+            var endpoint = options.LoggingEndpoint ?? options.Otlp?.Endpoint?.AbsoluteUri ?? string.Empty;
             if (string.IsNullOrWhiteSpace(endpoint))
                 throw new InvalidOperationException("No logging endpoint configured");
 
@@ -58,7 +58,7 @@ namespace GMO.OpenTelemetry.Serilog
                 {
                     opts.Endpoint = endpoint;
                     opts.Protocol = protocol;
-                    opts.Headers = headers;
+                    opts.Headers = headers ?? new Dictionary<string, string>();
                     opts.ResourceAttributes = options.Attributes ?? new Dictionary<string, object>();
                     opts.BatchingOptions.BatchSizeLimit = options.LogsMaxBatchSize > 0
                         ? options.LogsMaxBatchSize

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
@@ -22,7 +22,7 @@ namespace GMO.OpenTelemetry.Serilog
 
             var serilogSection = configuration.GetSection("Serilog");
 
-            if (!serilogSection?.Exists() == true)
+            if (serilogSection?.Exists() != true)
             {
                 return loggerConfig;
             }
