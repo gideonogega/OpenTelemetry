@@ -69,11 +69,17 @@ builder.Services.AddSingleton<CustomMetrics>();
 
 ## Building & Packaging
 
-This project **does not** include unit tests. It only needs to build and pack:
+**Always run `dotnet format` before building or committing** so encoding and style match CI (lint runs `dotnet format --verify-no-changes`).
 
 ```bash
+# Format (fix encoding/style; run before every build/commit)
+dotnet format src/GMO.OpenTelemetry.sln
+
 # Build
 dotnet build src/GMO.OpenTelemetry.sln -c Release
+
+# Run tests
+dotnet test src/GMO.OpenTelemetry.sln -c Release --no-build
 
 # Pack into NuGet packages
 dotnet pack src/GMO.OpenTelemetry.sln -c Release -o nupkgs /p:PackageVersion=1.0.0
@@ -93,9 +99,9 @@ GitHub Actions (`.github/workflows/ci.yml`) on push or PR to `main` or `dev`. Or
 
 1. Fork and create a branch
 2. Make changes following .editorconfig style (4 spaces, camelCase with `_` prefix for private fields)
-3. Run `dotnet format src/GMO.OpenTelemetry.sln` before committing to fix formatting issues
+3. **Always run `dotnet format src/GMO.OpenTelemetry.sln` before building or committing** (CI fails if format/encoding differs). Optionally run `dotnet format src/GMO.OpenTelemetry.sln --verify-no-changes` to confirm.
 4. Commit, push to your fork, and open a pull request against `main`
-5. Ensure CI passes (lint + build)
+5. Ensure CI passes (lint, build, test)
 
 ## License
 

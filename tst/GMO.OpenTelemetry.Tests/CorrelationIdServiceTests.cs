@@ -1,4 +1,4 @@
-using GMO.OpenTelemetry;
+﻿using GMO.OpenTelemetry;
 using Xunit;
 
 namespace GMO.OpenTelemetry.Tests
