@@ -9,7 +9,12 @@
 		<RepositoryUrl>https://github.com/gideonogegaorg/OpenTelemetry</RepositoryUrl>
 		<Authors>Gideon Ogega</Authors>
 		<Description>Serilog integration for GMO.OpenTelemetry (.NET 10+).</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Serilog.Settings.Configuration" />
