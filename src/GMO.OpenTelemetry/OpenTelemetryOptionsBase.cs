@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenTelemetry.Exporter;
@@ -22,6 +22,9 @@ namespace GMO.OpenTelemetry
         bool SendOverflowLogs { get; set; }
         HashSet<string> OverflowLogOperations { get; set; }
         HashSet<string> AdditionalKeysToLog { get; set; }
+        /// <summary>Application name (base name, e.g. "GMO.Family.Web"). Used for application.name attribute.</summary>
+        string ApplicationName { get; }
+        /// <summary>Service name (environment-suffixed when set, e.g. "GMO.Family.Web.main"). Used for service.name and resource.</summary>
         string ServiceName { get; }
         string Version { get; }
         Dictionary<string, object> Attributes { get; }
@@ -103,12 +106,23 @@ namespace GMO.OpenTelemetry
         public Uri? MetricsEndpoint { get; set; } = null;
         public OtlpExporterOptions Otlp { get; set; } = new OtlpExporterOptions();
 
-        public abstract string ServiceName { get; }
+        public abstract string ApplicationName { get; }
         public abstract string Version { get; }
+
+        private string? _serviceName;
+
+        /// <summary>
+        /// Service name (environment dot-suffixed when set, e.g. "GMO.Family.Web.main"). Used for service.name, entity.name, and resource.
+        /// </summary>
+        public virtual string ServiceName =>
+            _serviceName ??= string.IsNullOrWhiteSpace(EnvironmentName) || string.Equals(EnvironmentName, "undefined", StringComparison.OrdinalIgnoreCase)
+                ? ApplicationName
+                : $"{ApplicationName}.{EnvironmentName.Trim()}";
 
         public Dictionary<string, object> Attributes => new Dictionary<string, object>()
         {
             ["service.name"] = ServiceName,
+            ["application.name"] = ApplicationName,
             ["entity.name"] = ServiceName,
             ["service.version"] = Version,
             ["environment.name"] = string.IsNullOrWhiteSpace(EnvironmentName) ? Environment.MachineName : EnvironmentName,
